@@ -1,6 +1,8 @@
 # lvmama fix
 
-[Visual Studio Code](https://code.visualstudio.com/) 扩展插件，使用 [驴妈妈Eslint规则](https://github.com/LVMM-H5/front-end-style-guide/tree/master/eslint) 检查并自动修复代码中的问题。
+Visual Studio Code 扩展插件，使用 [驴妈妈Eslint规则](https://github.com/LVMM-H5/front-end-style-guide/tree/master/eslint) 检查并自动修复代码中的问题。
+
+[下载地址](https://marketplace.visualstudio.com/items?itemName=Sky.lvmama-fix)
 
 ## 工作流程
 
