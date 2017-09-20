@@ -1,5 +1,5 @@
 {
-  "name": "lvmama-fix2",
+  "name": "lvmama-fix",
   "displayName": "lvmama fix",
   "description": "使用驴妈妈Eslint规则检查并自动修复代码中的问题",
   "version": "1.2.1",
