@@ -1,8 +1,8 @@
 {
-  "name": "lvmama-fix",
+  "name": "lvmama-fix2",
   "displayName": "lvmama fix",
   "description": "使用驴妈妈Eslint规则检查并自动修复代码中的问题",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "publisher": "Sky",
   "engines": {
     "vscode": "^1.16.0"
@@ -19,18 +19,24 @@
     "commands": [
       {
         "command": "extension.lvmamaFix",
-        "title": "lvmama fix: 修复当前文件"
+        "title": "修复当前文件",
+        "category": "lvmama fix",
+        "icon": {
+          "light": "./images/light.png",
+          "dark": "./images/dark.png"
+        }
       },
       {
         "command": "extension.lvmamaFixAll",
-        "title": "lvmama fix: 修复指定目录下所有文件"
+        "title": "修复指定目录下所有文件",
+        "category": "lvmama fix"
       }
     ],
     "menus": {
-      "editor/context": [
+      "editor/title": [
         {
           "command": "extension.lvmamaFix",
-          "group": "1_modification"
+          "group": "navigation"
         }
       ]
     },
@@ -65,5 +71,5 @@
     "eslint-plugin-html": "^3.2.1",
     "js-beautify": "^1.7.3"
   },
-  "icon": "lvmama.gif"
+  "icon": "images/logo.png"
 }

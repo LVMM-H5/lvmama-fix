@@ -203,6 +203,8 @@ function activate(context) {
                         });
                     });
                 }
+            } else {
+                window.showWarningMessage(`${lvmama}: 没有检测到已打开的文件！`);
             }
         } catch (e) {
             console.error(e);
