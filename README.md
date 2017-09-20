@@ -48,7 +48,7 @@ if (true) { this.test(); } else { this.test(`a的值是：${a}`); }
 
     对当前激活状态编辑页面的代码进行 Eslint 检查，检查出的问题会显示在 `输出` 面板中，并自动修复全部可修复的问题。支持 `JavaScript`, `HTML`, `Vue` 文件类型。注意必须是已经保存的文件，使用 VSCode 新创建而未保存的文件不可用。
 
-    你也可以点击编辑器右上角的 `小驴` 图标或者快键键 `Ctrl+L` 调用。
+    你也可以点击编辑器右上角的 <img width="25px" height="25px" src="https://github.com/LVMM-H5/lvmama-fix/blob/master/images/dark.png"> 图标或者快键键 `Ctrl+L` 调用。
 
 * `lvmama fix: 修复指定目录下所有文件`
 
@@ -89,5 +89,5 @@ if (true) { this.test(); } else { this.test(`a的值是：${a}`); }
 ### 1.2.1
 
 * 更改插件 logo；
-* 在编辑器右上角添加 `小驴` 图标按钮，关联 `修复当前文件` 指令；
+* 在编辑器右上角添加 <img width="25px" height="25px" src="https://github.com/LVMM-H5/lvmama-fix/blob/master/images/dark.png"> 图标按钮，关联 `修复当前文件` 指令；
 * 移除右键菜单的 `修复当前文件` 项。
