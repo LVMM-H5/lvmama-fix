@@ -33,5 +33,5 @@
 ### 1.2.1
 
 * 更改插件 logo；
-* 在编辑器右上角添加 `小驴` 图标按钮，关联 `修复当前文件` 指令；
+* 在编辑器右上角添加 <img width="25px" height="25px" src="https://github.com/LVMM-H5/lvmama-fix/blob/master/images/dark.png"> 图标按钮，关联 `修复当前文件` 指令；
 * 移除右键菜单的 `修复当前文件` 项。
