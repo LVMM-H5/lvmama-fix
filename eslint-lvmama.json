@@ -1,0 +1,28 @@
+{
+    "extends": [
+        "lvmama"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "commonjs": true,
+        "shared-node-browser": true,
+        "es6": true,
+        "mocha": true,
+        "jquery": true
+    },
+    "plugins": [
+        "html",
+        "lvmama"
+    ],
+    "rules": {
+        "lvmama/no-escape": "error"
+    }
+}

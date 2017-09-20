@@ -1,0 +1,69 @@
+{
+  "name": "lvmama-fix",
+  "displayName": "lvmama fix",
+  "description": "使用驴妈妈Eslint规则检查并自动修复代码中的问题",
+  "version": "1.2.0",
+  "publisher": "Sky",
+  "engines": {
+    "vscode": "^1.16.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.lvmamaFix",
+    "onCommand:extension.lvmamaFixAll"
+  ],
+  "main": "./extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.lvmamaFix",
+        "title": "lvmama fix: 修复当前文件"
+      },
+      {
+        "command": "extension.lvmamaFixAll",
+        "title": "lvmama fix: 修复指定目录下所有文件"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.lvmamaFix",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "extension.lvmamaFix",
+        "key": "ctrl+L",
+        "mac": "cmd+L",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LVMM-H5/lvmama-fix.git"
+  },
+  "homepage": "https://github.com/LVMM-H5/lvmama-fix#readme",
+  "devDependencies": {
+    "typescript": "^2.5.2",
+    "vscode": "^1.1.5",
+    "mocha": "^3.5.0",
+    "@types/node": "^7.0.0",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-lvmama": "^1.1.5",
+    "eslint-plugin-html": "^3.2.1",
+    "js-beautify": "^1.7.3"
+  },
+  "icon": "lvmama.gif"
+}
