@@ -2,7 +2,7 @@
   "name": "lvmama-fix",
   "displayName": "lvmama fix",
   "description": "使用驴妈妈Eslint规则检查并自动修复代码中的问题",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "publisher": "Sky",
   "engines": {
     "vscode": "^1.16.0"
@@ -47,7 +47,18 @@
         "mac": "cmd+L",
         "when": "editorTextFocus"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "lvmama fix 配置项",
+      "properties": {
+        "lvmamaFix.excludeFolders": {
+          "type": "array",
+          "default": ["node_modules", "dist", "dest"],
+          "description": "修复指定目录下所有文件时，排除的子目录的名称"
+        }
+      }
+    }
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",

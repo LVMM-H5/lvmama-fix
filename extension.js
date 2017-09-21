@@ -1,7 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const CLIEngine = require('eslint').CLIEngine;
+const CLIEngine = require('eslint')
+    .CLIEngine;
 const path = require('path');
 const fs = require('fs');
 const jsbeautify = require('js-beautify');
@@ -14,11 +15,12 @@ let output;
 
 /**
  * 读取目录下所有文件
- * 
+ *
  * @param {string} dir - 目录路径
+ * @param {array} excludeFolders - 排除的目录
  * @param {function} done - 回调函数
  */
-function readDirFiles(dir, done) {
+function readDirFiles(dir, excludeFolders, done) {
     let results = [];
     fs.readdir(dir, (err, list) => {
         if (err) {
@@ -29,26 +31,26 @@ function readDirFiles(dir, done) {
             return done(null, results);
         }
         list.forEach(file => {
-            file = path.resolve(dir, file);
-            fs.stat(file, (err, stat) => {
+            const filePath = path.resolve(dir, file);
+            fs.stat(filePath, (err, stat) => {
                 if (err) {
-                    return done(err);
+                    done(err);
                 } else if (stat.isDirectory()) {
-                    if (file.indexOf('node_modules') === -1) {
-                        readDirFiles(file, (err, res) => {
+                    if (!excludeFolders.includes(file)) {
+                        readDirFiles(filePath, excludeFolders, (err, res) => {
                             results = results.concat(res);
                             if (!--pending) {
                                 done(null, results);
                             }
                         });
                     } else {
-                        // 如果是 node_modules 目录，需要判断下是否已结束
+                        // 如果是被排除的目录，需要判断下是否已结束
                         if (!--pending) {
                             done(null, results);
                         }
                     }
                 } else {
-                    results.push(file);
+                    results.push(filePath);
                     if (!--pending) {
                         done(null, results);
                     }
@@ -79,7 +81,8 @@ function checkErr(fileName, cli) {
         }
     });
 
-    if (Object.keys(parseErr).length) {
+    if (Object.keys(parseErr)
+        .length) {
         return {
             hasErr: true,
             filePath: parseErr.filePath,
@@ -146,13 +149,6 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    const cli = new CLIEngine({
-        configFile: path.join(__dirname, './eslint-lvmama.json'),
-        extensions: ['.js', '.htm', '.html', '.vue'],
-        ignorePattern: '**/node_modules',
-        useEslintrc: false,
-        fix: true
-    });
 
     // 创建输出面板
     output = window.createOutputChannel(lvmama);
@@ -173,19 +169,25 @@ function activate(context) {
                 }
 
                 if (!['javascript', 'html', 'vue'].includes(language)) {
-                    window.showErrorMessage(`${lvmama}: 不支持的文件类型！`);
+                    window.showErrorMessage(`${lvmama}: 不支持的文件类型：${language}！`);
                     return;
                 }
 
+                const cli = new CLIEngine({
+                    configFile: path.join(__dirname, './eslint-lvmama.json'),
+                    extensions: ['.js', '.htm', '.html', '.vue'],
+                    useEslintrc: false,
+                    fix: true
+                });
                 const checker = checkErr(doc.fileName, cli);
                 if (checker.hasErr) {
                     window.showErrorMessage(`${lvmama}: 当前文件 ${checker.line}:${checker.column} 似乎存在语法错误，请检查修改！`);
                 } else {
-                    window.withProgress({ location: vscode.ProgressLocation.Window }, progress => {
-                        return new Promise((resolve, reject) => {
-                            const start = Date.now();
-                            progress.report({ message: `${lvmama} 修复中...` });
-                            fixFile(doc.fileName, language, cli).then(() => {
+                    window.withProgress({ location: vscode.ProgressLocation.Window }, progress => new Promise((resolve, reject) => {
+                        const start = Date.now();
+                        progress.report({ message: `${lvmama} 修复中...` });
+                        fixFile(doc.fileName, language, cli)
+                            .then(() => {
                                 const end = Date.now();
                                 if (end - start < minTimeout) {
                                     setTimeout(() => {
@@ -196,18 +198,17 @@ function activate(context) {
                                     resolve();
                                     window.showInformationMessage(`${lvmama}: 修复已完成！`);
                                 }
-                            }).catch(err => {
+                            })
+                            .catch(err => {
                                 reject();
                                 window.showErrorMessage(`${lvmama}: 修复失败！Error: ${err}`);
                             });
-                        });
-                    });
+                    }));
                 }
             } else {
                 window.showWarningMessage(`${lvmama}: 没有检测到已打开的文件！`);
             }
         } catch (e) {
-            console.error(e);
             output.show();
             output.appendLine(e);
         }
@@ -219,47 +220,63 @@ function activate(context) {
             window.showInputBox({
                 placeHolder: '请输入目录的相对路径或绝对路径',
                 prompt: '支持目录下 .js, .htm, .html .vue 后缀的文件'
-            }).then(input => {
-                if (typeof input === 'undefined') {
-                    return;
-                }
+            })
+                .then(input => {
+                    if (typeof input === 'undefined') {
+                        return;
+                    }
 
-                let folderPath = input.trim();
+                    let folderPath = input.trim();
 
-                // 空路径直接返回
-                if (!folderPath) {
-                    return;
-                }
+                    // 空路径直接返回
+                    if (!folderPath) {
+                        return;
+                    }
 
-                folderPath = path.resolve(__dirname, folderPath);
+                    folderPath = path.resolve(__dirname, folderPath);
 
-                fs.stat(folderPath, (err, stats) => {
-                    if (err) {
-                        if (err.code === 'ENOENT') {
-                            window.showErrorMessage(`${lvmama}: 目录 ${folderPath} 不存在！`);
-                        } else {
-                            window.showErrorMessage(`${lvmama}: 读取 ${folderPath} 时出错！error: ${err.message}`);
+                    fs.stat(folderPath, (err, stats) => {
+                        if (err) {
+                            if (err.code === 'ENOENT') {
+                                window.showErrorMessage(`${lvmama}: 目录 ${folderPath} 不存在！`);
+                            } else {
+                                window.showErrorMessage(`${lvmama}: 读取 ${folderPath} 时出错！error: ${err.message}`);
+                            }
+                            return;
                         }
-                        return;
-                    }
 
-                    if (!stats.isDirectory()) {
-                        window.showErrorMessage(`${lvmama}: 路径 ${folderPath} 必须是一个目录！`);
-                        return;
-                    }
+                        if (!stats.isDirectory()) {
+                            window.showErrorMessage(`${lvmama}: 路径 ${folderPath} 必须是一个目录！`);
+                            return;
+                        }
 
-                    try {
-                        const checker = checkErr(folderPath, cli);
-                        if (checker.hasErr) {
-                            window.showErrorMessage(`${lvmama}: 文件 ${checker.filePath} ${checker.line}:${checker.column} 似乎存在语法错误，请检查修改！`);
-                        } else {
-                            window.withProgress({ location: vscode.ProgressLocation.Window }, progress => {
-                                return new Promise((resolve, reject) => {
+                        try {
+                            // 获取用户配置的排除的目录
+                            const excludeFolders = vscode.workspace.getConfiguration('lvmamaFix').excludeFolders;
+
+                            let ignorePattern = [];
+                            if (excludeFolders && excludeFolders.length) {
+                                ignorePattern = excludeFolders.map(folder => {
+                                    return `**/${folder}`;
+                                });
+                            }
+                            const cli = new CLIEngine({
+                                configFile: path.join(__dirname, './eslint-lvmama.json'),
+                                extensions: ['.js', '.htm', '.html', '.vue'],
+                                ignorePattern,
+                                useEslintrc: false,
+                                fix: true
+                            });
+                            const checker = checkErr(folderPath, cli);
+                            if (checker.hasErr) {
+                                window.showErrorMessage(`${lvmama}: 文件 ${checker.filePath} ${checker.line}:${checker.column} 似乎存在语法错误，请检查修改！`);
+                            } else {
+                                window.withProgress({ location: vscode.ProgressLocation.Window }, progress => new Promise((resolve, reject) => {
                                     const start = Date.now();
                                     progress.report({ message: `${lvmama} 修复中...` });
 
                                     // 读取目录下的所有文件
-                                    readDirFiles(folderPath, (err, files) => {
+                                    readDirFiles(folderPath, excludeFolders, (err, files) => {
                                         if (err) {
                                             reject();
                                             window.showErrorMessage(`${lvmama}: 读取 ${folderPath} 时出错！error: ${err.message}`);
@@ -280,34 +297,33 @@ function activate(context) {
                                             window.showInformationMessage(`${lvmama}: 目录 ${folderPath} 下没有可支持的文件！`);
                                             return;
                                         }
-                                        Promise.all(promiseList).then(() => {
-                                            const end = Date.now();
-                                            if (end - start < minTimeout) {
-                                                setTimeout(() => {
+                                        Promise.all(promiseList)
+                                            .then(() => {
+                                                const end = Date.now();
+                                                if (end - start < minTimeout) {
+                                                    setTimeout(() => {
+                                                        resolve();
+                                                        window.showInformationMessage(`${lvmama}: 目录 ${folderPath} 下的${promiseList.length}个文件全部修复完成！`);
+                                                    }, (minTimeout - (end - start)));
+                                                } else {
                                                     resolve();
                                                     window.showInformationMessage(`${lvmama}: 目录 ${folderPath} 下的${promiseList.length}个文件全部修复完成！`);
-                                                }, (minTimeout - (end - start)));
-                                            } else {
-                                                resolve();
-                                                window.showInformationMessage(`${lvmama}: 目录 ${folderPath} 下的${promiseList.length}个文件全部修复完成！`);
-                                            }
-                                        }).catch(err => {
-                                            reject();
-                                            window.showErrorMessage(`${lvmama}: 修复失败！Error: ${err}`);
-                                        });
+                                                }
+                                            })
+                                            .catch(err => {
+                                                reject();
+                                                window.showErrorMessage(`${lvmama}: 修复失败！Error: ${err}`);
+                                            });
                                     });
-                                });
-                            });
+                                }));
+                            }
+                        } catch (e) {
+                            output.show();
+                            output.appendLine(e);
                         }
-                    } catch (e) {
-                        console.error(e);
-                        output.show();
-                        output.appendLine(e);
-                    }
+                    });
                 });
-            });
         } catch (e) {
-            console.error(e);
             output.show();
             output.appendLine(e);
         }

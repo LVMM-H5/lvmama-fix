@@ -48,37 +48,38 @@ if (true) { this.test(); } else { this.test(`a的值是：${a}`); }
 
     对当前激活状态编辑页面的代码进行 Eslint 检查，检查出的问题会显示在 `输出` 面板中，并自动修复全部可修复的问题。支持 `JavaScript`, `HTML`, `Vue` 文件类型。注意必须是已经保存的文件，使用 VSCode 新创建而未保存的文件不可用。
 
-    你也可以点击编辑器右上角的 <img width="25px" height="25px" src="https://github.com/LVMM-H5/lvmama-fix/blob/master/images/dark.png"> 图标或者快键键 `Ctrl+L` 调用。
+    你也可以点击编辑器右上角的 `小驴` 图标或者快键键 `Ctrl+L` 调用。
 
 * `lvmama fix: 修复指定目录下所有文件`
 
-    通过键入一个目录路径，对该目录下所有 `.js`, `.htm`, `.html`, `.vue` 后缀的文件进行 Eslint 检查，检查出的问题会显示在 `输出` 面板中，并自动修复全部可修复的问题。输入的目录支持相对路径和绝对路径。查找文件时会自动过滤任意层级的 `node_modules` 目录。
+    通过键入一个目录路径，对该目录下所有 `.js`, `.htm`, `.html`, `.vue` 后缀的文件进行 Eslint 检查，检查出的问题会显示在 `输出` 面板中，并自动修复全部可修复的问题。输入的目录支持相对路径和绝对路径。查找文件时会根据[设置](#设置)自动排除任意层级符合条件的目录。
+
+## 设置
+
+在编辑器的 `设置` 页面，你可以设置修复指定目录下所有文件时，排除的子目录的名称。
+
+默认的设置项：
+```js
+"lvmamaFix.excludeFolders": [
+    "node_modules",
+    "dist",
+    "dest"
+]
+```
 
 ## 更新日志
 
-### 1.0.0
+### 1.3.0
 
-* lvmama fix 初始版本发布。
+* 现在可以在编辑器的 `设置` 中添加修复目录时需要排除的子目录；
+* 同步最新 `eslint-config-lvmama` 规则；
+* 代码优化。
 
-### 1.1.0
+### 1.2.1
 
-* 更新 eslint-config-lvmama 至 v1.1.3，新增了 `no-escape` 自定义规则。
-
-### 1.1.1
-
-* 使用 `lvmama fix: 修复指定目录下所有文件` 命令现在会自动排除 `node_modules` 目录了。
-
-### 1.1.2
-
-* 忽略本地目录下的 `.eslintrc` 文件。
-
-### 1.1.3
-
-* 增加 Eslint 环境定义。
-
-### 1.1.4
-
-* 新增 `no-tab-use` 自定义规则（含自动修复）。
+* 更改插件 logo；
+* 在编辑器右上角添加 `小驴` 图标按钮，关联 `修复当前文件` 指令；
+* 移除右键菜单的 `修复当前文件` 项。
 
 ### 1.2.0
 
@@ -86,8 +87,26 @@ if (true) { this.test(); } else { this.test(`a的值是：${a}`); }
 * 在 Eslint 自动修复之前，现在会自动进行一次代码格式化操作；
 * 相关逻辑优化。
 
-### 1.2.1
+### 1.1.4
 
-* 更改插件 logo；
-* 在编辑器右上角添加 <img width="25px" height="25px" src="https://github.com/LVMM-H5/lvmama-fix/blob/master/images/dark.png"> 图标按钮，关联 `修复当前文件` 指令；
-* 移除右键菜单的 `修复当前文件` 项。
+* 新增 `no-tab-use` 自定义规则（含自动修复）。
+
+### 1.1.3
+
+* 增加 Eslint 环境定义。
+
+### 1.1.2
+
+* 忽略本地目录下的 `.eslintrc` 文件。
+
+### 1.1.1
+
+* 使用 `lvmama fix: 修复指定目录下所有文件` 命令现在会自动排除 `node_modules` 目录了。
+
+### 1.1.0
+
+* 更新 eslint-config-lvmama 至 v1.1.3，新增了 `no-escape` 自定义规则。
+
+### 1.0.0
+
+* lvmama fix 初始版本发布。
